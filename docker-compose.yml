@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  api:
+    container_name: api
+    build: ./asciilograph-api
+    volumes:
+      - ./asciilograph-api/main.py:/usr/src/app/main.py
+    ports:
+      - 8000:8000
