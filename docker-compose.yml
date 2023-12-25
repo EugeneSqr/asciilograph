@@ -5,6 +5,6 @@ services:
     container_name: api
     build: ./asciilograph-api
     volumes:
-      - ./asciilograph-api/main.py:/usr/src/app/main.py
+      - ./asciilograph-api/app:/usr/src/app
     ports:
       - 8000:8000
