@@ -2,9 +2,24 @@ version: '3'
 
 services:
   api:
-    container_name: api
+    container_name: asciilograph-api
     build: ./asciilograph-api
     volumes:
       - ./asciilograph-api/app:/usr/src/app
+    environment:
+      - RABBITMQ_HOST=${RABBITMQ_HOST}
+      - RABBITMQ_USER=${RABBITMQ_USER}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
     ports:
       - 8000:8000
+    depends_on:
+      - rabbitmq
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: asciilograph-rabbit
+    hostname: ${RABBITMQ_HOST}
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
+    ports:
+      - 15672:15672
