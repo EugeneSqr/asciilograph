@@ -7,11 +7,28 @@ services:
     volumes:
       - ./asciilograph-api/app:/usr/src/app
     environment:
+      # should show a warning if an env variable isn't set in the shell environment
       - RABBITMQ_HOST=${RABBITMQ_HOST}
       - RABBITMQ_USER=${RABBITMQ_USER}
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+      - RABBITMQ_IMAGE_PROCESSING_QUEUE=${RABBITMQ_IMAGE_PROCESSING_QUEUE}
+      - PYTHONUNBUFFERED=1
     ports:
       - 8000:8000
+    depends_on:
+      - rabbitmq
+      - worker
+  worker:
+    container_name: asciilograph-worker
+    build: ./asciilograph-worker
+    volumes:
+      - ./asciilograph-worker/app:/usr/src/app
+    environment:
+      - RABBITMQ_HOST=${RABBITMQ_HOST}
+      - RABBITMQ_USER=${RABBITMQ_USER}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+      - RABBITMQ_IMAGE_PROCESSING_QUEUE=${RABBITMQ_IMAGE_PROCESSING_QUEUE}
+      - PYTHONUNBUFFERED=1
     depends_on:
       - rabbitmq
   rabbitmq:

@@ -1,3 +1,6 @@
 [submodule "asciilograph-api"]
 	path = asciilograph-api
 	url = git@github.com:EugeneSqr/asciilograph-api.git
+[submodule "asciilograph-worker"]
+	path = asciilograph-worker
+	url = git@github.com:EugeneSqr/asciilograph-worker.git
