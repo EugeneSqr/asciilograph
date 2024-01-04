@@ -12,12 +12,16 @@ services:
       - RABBITMQ_USER=${RABBITMQ_USER}
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
       - RABBITMQ_IMAGE_PROCESSING_QUEUE=${RABBITMQ_IMAGE_PROCESSING_QUEUE}
+      - FILESERVER_ADDRESS=${FILESERVER_ADDRESS}
+      - FILESERVER_USER=${FILESERVER_USER}
+      - FILESERVER_PASSWORD=${FILESERVER_PASSWORD}
       - PYTHONUNBUFFERED=1
     ports:
       - 8000:8000
     depends_on:
       - rabbitmq
       - worker
+      - fileserver
   worker:
     container_name: asciilograph-worker
     build: ./asciilograph-worker
@@ -28,9 +32,20 @@ services:
       - RABBITMQ_USER=${RABBITMQ_USER}
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
       - RABBITMQ_IMAGE_PROCESSING_QUEUE=${RABBITMQ_IMAGE_PROCESSING_QUEUE}
+      - FILESERVER_ADDRESS=${FILESERVER_ADDRESS}
+      - FILESERVER_USER=${FILESERVER_USER}
+      - FILESERVER_PASSWORD=${FILESERVER_PASSWORD}
       - PYTHONUNBUFFERED=1
     depends_on:
       - rabbitmq
+      - fileserver
+  fileserver:
+    image: delfer/alpine-ftp-server
+    container_name: asciilograph-fileserver
+    hostname: ${FILESERVER_ADDRESS}
+    environment:
+      - USERS=${FILESERVER_USER}|${FILESERVER_PASSWORD}
+      - ADDRESS=${FILESERVER_ADDRESS}
   rabbitmq:
     image: rabbitmq:3-management
     container_name: asciilograph-rabbit
