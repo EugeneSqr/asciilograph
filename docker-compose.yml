@@ -23,7 +23,6 @@ services:
       - worker
       - fileserver
   worker:
-    container_name: asciilograph-worker
     build: ./asciilograph-worker
     volumes:
       - ./asciilograph-worker/app:/usr/src/app
@@ -39,6 +38,10 @@ services:
     depends_on:
       - rabbitmq
       - fileserver
+    # simulate multiple worker clusters
+    deploy:
+      mode: replicated
+      replicas: 6
   fileserver:
     image: delfer/alpine-ftp-server
     container_name: asciilograph-fileserver
@@ -46,6 +49,9 @@ services:
     environment:
       - USERS=${FILESERVER_USER}|${FILESERVER_PASSWORD}
       - ADDRESS=${FILESERVER_ADDRESS}
+      # allow more concurrent connections
+      - MIN_PORT=21000
+      - MAX_PORT=22000
   rabbitmq:
     image: rabbitmq:3-management
     container_name: asciilograph-rabbit
