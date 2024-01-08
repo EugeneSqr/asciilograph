@@ -3,8 +3,14 @@ Distribute ASCII arts generation with [ascii-magic](https://github.com/LeandroBa
 
 ![image](https://raw.githubusercontent.com/EugeneSqr/asciilograph/assets/demo.gif)
 
+## High level design
+Here is how multiple pieces tie together:
+![image](https://raw.githubusercontent.com/EugeneSqr/asciilograph/assets/asciilograph.jpg)
+
+[asciilograph-api](https://github.com/EugeneSqr/asciilograph-api) is a RESTful API which accepts HTTP requests from clients. It streams image bytes to a file server and enqueues image processing via a message broker (rabbitmq). Multiple instances of [asciilograph-worker](https://github.com/EugeneSqr/asciilograph-worker) pick up euqueued processing tasks and do all the job using awesome [ascii-magic](https://github.com/LeandroBarone/python-ascii_magic) library. After the processing is complete `asciilograph-worker` reports results back to `asciilograph-api` via a message enqueued to a dedicated message broker queue. The `asciilograph-api` responds back to the client with the result text.
+
 # Development setup
-Make sure to have the `.env` file with all the settings:
+Make sure to have the `.env` file with all the settings in the `./asciilograph` directory alongside `docker-compose.yml`:
 ```yaml
 RABBITMQ_HOST=rabbitmq
 RABBITMQ_USER=admin
